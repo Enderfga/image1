@@ -1,27 +1,16 @@
-name: Merge Imgbot
-
+name: image
 on:
   pull_request:
-    types:
-      - opened
-      - ready_for_review
-  pull_request_review:
-    types:
-      - submitted
-  status: {}
-
+    paths:
+      - 'static/**'
 jobs:
-  automerge:
+  compress:
     runs-on: ubuntu-latest
     steps:
-      - name: automerge
-        uses: "pascalgn/automerge-action@v0.6.1"
-        env:
-          GITHUB_TOKEN: "${{ secrets.GIT_MERGE_TOKEN }}"
-          MERGE_LABELS: ""
-          MERGE_METHOD: "squash"
-          MERGE_COMMIT_MESSAGE: "pull-request-description"
-          MERGE_FORKS: "false"
-          MERGE_RETRIES: "2"
-          MERGE_RETRY_SLEEP: "10000"
-          UPDATE_METHOD: "rebase"
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+      - uses: namoscato/action-tinify@v1
+        with:
+          api_key: ${{ secrets.TINIFY_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
